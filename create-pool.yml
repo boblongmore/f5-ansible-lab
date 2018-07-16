@@ -1,5 +1,5 @@
 ---
-- hosts: big_ip
+- hosts: bigip_devices
   connection: local
   tasks:
   - name: Add Webserver A
