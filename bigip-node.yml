@@ -1,0 +1,14 @@
+---
+hosts: big_ip
+connection: local
+vars:
+  bigip_username: admin
+  bigip_password: admin
+tasks:
+  - name: add node
+    bigip_node:
+      server: {{ bigip_server }}
+      user: {{ bigip_username }}
+      password: {{bigip_password }}
+      host: "10.100.1.101"
+      state: "present"
