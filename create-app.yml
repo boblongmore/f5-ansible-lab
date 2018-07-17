@@ -1,0 +1,64 @@
+---
+- hosts: bigip_devices
+  vars:
+    nodes:
+    - host: "10.128.20.104"
+      port: "80"
+    - host: "10.128.20.105"
+      port: "80"
+  connection: local
+  tasks:
+
+  - name: Create Webserver Pool
+    bigip_pool:
+      server: "{{ bigip_server }}"
+      user: "{{ bigip_username }}"
+      password: "{{ bigip_password }}"
+      name: "{{ app_name }}_pool"
+      lb_method: "round-robin"
+      monitors:
+      - http
+      - tcp
+      monitor_type: and_list
+      validate_certs: False
+
+  - name: Add Webserver pool members to Webserver Pool
+    bigip_pool_member:
+      server: "{{ bigip_server }}"
+      user: "{{ bigip_username }}"
+      password: "{{ bigip_password }}"
+      pool: "{{ app_name }}_pool"
+      host: "{{ item.host }}"
+      port: "{{ item.port }}"
+      validate_certs: False
+    with_items: "{{ nodes }}"
+
+  - name: Add HTTPS virtual server
+    bigip_virtual_server:
+      server: "{{ bigip_server }}"
+      user: "{{ bigip_username }}"
+      password: "{{ bigip_password }}"
+      validate_certs: False
+      name: "{{ app_name }}_443_vs"
+      destination: "{{ vip_ip }}"
+      port: 443
+      pool: "{{ app_name }}_pool"
+      snat: Automap
+      all_profiles:
+        - http
+        - clientssl
+
+  - name: Add HTTP virtual server
+    bigip_virtual_server:
+      server: "{{ bigip_server }}"
+      user: "{{ bigip_username }}"
+      password: "{{ bigip_password }}"
+      validate_certs: False
+      name: "{{ app_name }}_80_vs"
+      destination: "{{ vip_ip }}"
+      port: 80
+      snat: Automap
+      all_profiles:
+        - http
+      all_rules:
+        - "_sys_https_redirect"
