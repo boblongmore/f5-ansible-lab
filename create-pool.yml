@@ -5,8 +5,8 @@
   - name: Add Webserver A
     bigip_node:
        server: "{{ bigip_server }}"
-       #user: "{{ bigip_username }}"
-       #password: "{{ bigip_password }}"
+       user: "{{ f5creds }}"
+       password: "{{ f5creds }}"
        name: "10.128.20.104"
        host: "10.128.20.104"
        validate_certs: False
@@ -14,8 +14,8 @@
   - name: Add Webserver B
     bigip_node:
       server: "{{ bigip_server }}"
-      #user: "{{ bigip_username }}"
-      #password: "{{ bigip_password }}"
+      user: "{{ f5creds }}"
+      password: "{{ f5creds }}"
       name: "10.128.20.105"
       host: "10.128.20.105"
       validate_certs: False
@@ -23,8 +23,8 @@
   - name: Create Webserver Pool
     bigip_pool:
       server: "{{ bigip_server }}"
-      #user: "{{ bigip_username }}"
-      #password: "{{ bigip_password }}"
+      user: "{{ f5creds }}"
+      password: "{{ f5creds }}"
       name: "ansible_webserver_pool"
       lb_method: "round-robin"
       monitors:
@@ -36,8 +36,8 @@
   - name: Add Webserver A to Webserver Pool
     bigip_pool_member:
       server: "{{ bigip_server }}"
-      #user: "{{ bigip_username }}"
-      #password: "{{ bigip_password }}"
+      user: "{{ f5creds }}"
+      password: "{{ f5creds }}"
       pool: "ansible_webserver_pool"
       host: "10.128.20.104"
       port: 80
@@ -46,8 +46,8 @@
   - name: Add Webserver A to Webserver Pool
     bigip_pool_member:
       server: "{{ bigip_server }}"
-      #user: "{{ bigip_username }}"
-      #password: "{{ bigip_password }}"
+      user: "{{ f5creds }}"
+      password: "{{ f5creds }}"
       pool: "ansible_webserver_pool"
       host: "10.128.20.105"
       port: 80
